@@ -72,8 +72,11 @@ public class MNISTDatabase {
         String path = Constants.MNIST_PATH + "/mnist_png/" + folderName;
         File biasedDir = new File(path);     
         log.info("New Biased Data folder: " + path);
-//        if(!biasedDir.exists())
-            biasedDir.mkdir();
+        
+        if(biasedDir.exists())
+            destroyBiasedTrainData(path);
+        
+        biasedDir.mkdir();
         for(int i=0; i<Constants.NUM_CLASS; i++){
             new File(path + "/" + String.valueOf(i)).mkdir();
             if(ratios[i]!=100) {

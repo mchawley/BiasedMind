@@ -11,6 +11,9 @@ import java.util.Set;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import u.manishchawley.biasedmind.utils.MNISTDatabase;
+import org.nd4j.evaluation.classification.Evaluation;
+import u.manishchawley.biasedmind.setup.Experiment;
+import u.manishchawley.biasedmind.setup.ExperimentCases;
 
 /**
  *
@@ -24,12 +27,17 @@ public class TestClass {
         BasicConfigurator.configure();
         MNISTDatabase database = MNISTDatabase.getInstance();
         
-        String key = String.valueOf(0);
-        int[] ratios = {100, 100, 100, 100, 100, 100, 100, 100, 50 ,100};
-        log.info(Arrays.toString(ratios).replaceAll("[\\[\\],]", "_"));
-        log.info(database.trainFiles.get(String.valueOf(0)).size());
-        String path = database.generateBiasedTrainData(ratios);
-        database.destroyBiasedTrainData(path);
+        ExperimentCases cases = ExperimentCases.getINSTANCE();
+        
+        
+        
+        int[] ratios = cases.getNextExperiment().getRatios();
+        cases.completedExperiment(new Experiment());
+        log.info(Arrays.toString(ratios));
+//        String path = database.generateBiasedTrainData(ratios);
+//        MnistClassifier classifier = new MnistClassifier();
+//        Evaluation eval = classifier.trainModel(path);
+//        database.destroyBiasedTrainData(path);
     }
         
 }

@@ -47,6 +47,7 @@ import org.nd4j.linalg.schedule.MapSchedule;
 import org.nd4j.linalg.schedule.ScheduleType;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -71,23 +72,21 @@ public class MnistClassifier {
     
     private static Logger log = Logger.getLogger(MnistClassifier.class);
     
-    public static void main(String[] args) throws Exception {
-        BasicConfigurator.configure();
-        
-        int height = 28;    // height of the picture in px
-        int width = 28;     // width of the picture in px
-        int channels = 1;   // single channel for grayscale images
-        int outputNum = 10; // 10 digits classification
-        int batchSize = 54; // number of samples that will be propagated through the network in each iteration
-        int nEpochs = 1;    // number of training epochs
+    private int height = 28;    // height of the picture in px
+    private int width = 28;     // width of the picture in px
+    private int channels = 1;   // single channel for grayscale images
+    private int outputNum = 10; // 10 digits classification
+    private int batchSize = 54; // number of samples that will be propagated through the network in each iteration
+    private int nEpochs = 1;    // number of training epochs
 
-        int seed = 1234;    // number used to initialize a pseudorandom number generator.
-        Random randNumGen = new Random(seed);
-
+    
+    public Evaluation trainModel(String path) throws IOException {
         
+        Random randNumGen = new Random(Constants.SEED);
+
         log.info("Data vectorization...");
         // vectorization of train data
-        File trainData = new File(Constants.MNIST_PATH +  "/mnist_png/training");
+        File trainData = new File(path);
         FileSplit trainSplit = new FileSplit(trainData, NativeImageLoader.ALLOWED_FORMATS, randNumGen);
         ParentPathLabelGenerator labelMaker = new ParentPathLabelGenerator(); // use parent directory name as the image label
         ImageRecordReader trainRR = new ImageRecordReader(height, width, channels, labelMaker);
@@ -107,6 +106,32 @@ public class MnistClassifier {
         DataSetIterator testIter = new RecordReaderDataSetIterator(testRR, batchSize, 1, outputNum);
         testIter.setPreProcessor(imageScaler); // same normalization for better results
 
+        MultiLayerConfiguration conf = getMultiLayerConfiguration();
+
+        MultiLayerNetwork net = new MultiLayerNetwork(conf);
+        net.init();
+        net.setListeners(new ScoreIterationListener(10));
+//        log.info("Total num of params: " + net.numParams());
+
+        // evaluation while training (the score should go down)
+//        for (int i = 0; i < nEpochs; i++) {
+        log.info("Starting training");
+            net.fit(trainIter);
+//            log.info("Completed epoch: " +  i);
+            Evaluation eval = net.evaluate(testIter);
+            log.info(eval.stats());
+            return eval;
+//
+//            trainIter.reset();
+//            testIter.reset();
+//        }
+
+//        File ministModelPath = new File(Constants.MNIST_PATH + "/minist-model.zip");
+//        ModelSerializer.writeModel(net, ministModelPath, true);
+//        log.info("The MINIST model has been saved in: " + ministModelPath.getPath());
+    }
+
+    private MultiLayerConfiguration getMultiLayerConfiguration() {
         log.info("Network configuration and training...");
         // reduce the learning rate as the number of training epochs increases
         // iteration #, learning rate
@@ -116,9 +141,9 @@ public class MnistClassifier {
         learningRateSchedule.put(600, 0.028);
         learningRateSchedule.put(800, 0.0060);
         learningRateSchedule.put(1000, 0.001);
-
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-            .seed(seed)
+        
+        return new NeuralNetConfiguration.Builder()
+            .seed(Constants.SEED)
             .l2(0.0005) // ridge regression value
             .updater(new Nesterovs(new MapSchedule(ScheduleType.ITERATION, learningRateSchedule)))
             .weightInit(WeightInit.XAVIER)
@@ -151,25 +176,6 @@ public class MnistClassifier {
                 .build())
             .setInputType(InputType.convolutionalFlat(height, width, channels)) // InputType.convolutional for normal image
             .build();
-
-        MultiLayerNetwork net = new MultiLayerNetwork(conf);
-        net.init();
-        net.setListeners(new ScoreIterationListener(10));
-        log.info("Total num of params: " + net.numParams());
-
-        // evaluation while training (the score should go down)
-        for (int i = 0; i < nEpochs; i++) {
-            net.fit(trainIter);
-            log.info("Completed epoch: " +  i);
-            Evaluation eval = net.evaluate(testIter);
-            log.info(eval.stats());
-
-            trainIter.reset();
-            testIter.reset();
-        }
-
-//        File ministModelPath = new File(Constants.MNIST_PATH + "/minist-model.zip");
-//        ModelSerializer.writeModel(net, ministModelPath, true);
-//        log.info("The MINIST model has been saved in: " + ministModelPath.getPath());
     }
+
 }
