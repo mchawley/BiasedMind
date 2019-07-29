@@ -57,11 +57,20 @@ public class ExperimentCases {
     }
     
     public void completedExperiment(Experiment experiment) throws IOException{
-        log.info("Updating experiment evaluation");
+        log.info("Experiment Stats: " + experiment.getEvaluation().stats());
+        
+        log.info("Updating experiment evaluation: " + experiment.getExperimentNo());
         log.info(experimentCases.get(experiment.getExperimentNo()));
+        
+        String[] writeLine = experiment.getEvaluationString();
+        CSVWriter writer = new CSVWriter(new FileWriter(Constants.DATA_CSV, true));
+        writer.writeNext(writeLine);
+        writer.flush();
+        writer.close();
+        
         log.info("Updating status of experiment");
         experimentCases.get(experiment.getExperimentNo())[Constants.NUM_CLASS] = String.valueOf(1);
-        CSVWriter writer = new CSVWriter(new FileWriter(Constants.SETUP_CSV));
+        writer = new CSVWriter(new FileWriter(Constants.SETUP_CSV, false));
         writer.writeAll(experimentCases);
         writer.flush();
         writer.close();
@@ -79,6 +88,10 @@ public class ExperimentCases {
         } catch (IOException ex) {
             log.error(ex);
         }
+    }
+
+    public int getNoOfCases() {
+        return experimentCases.size();
     }
     
 }

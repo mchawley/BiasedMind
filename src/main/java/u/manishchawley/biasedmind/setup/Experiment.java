@@ -5,7 +5,10 @@
  */
 package u.manishchawley.biasedmind.setup;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import org.nd4j.evaluation.classification.ConfusionMatrix;
 import org.nd4j.evaluation.classification.Evaluation;
 import u.manishchawley.biasedmind.utils.Constants;
 
@@ -22,9 +25,28 @@ public class Experiment {
         this.ratios = new int[Constants.NUM_CLASS];
         for(int i=0; i<Constants.NUM_CLASS; i++){
             this.ratios[i] = Integer.valueOf(ratios[i]);
+            if(this.ratios[i]==1)
+                this.ratios[i]=Constants.ALL_TRAIN;
+            else
+                this.ratios[i]=Constants.LESS_TRAIN;
         }
-        System.out.println(Arrays.toString(this.ratios));
     }
+    
+    public String[] getEvaluationString(){
+        List<String> evalList = new ArrayList<>();
+        ConfusionMatrix<Integer> confusion = evaluation.getConfusionMatrix();
+        for(int i=0;i<ratios.length; i++)
+            evalList.add(String.valueOf(ratios[i]));
+        for(int i=0;i<Constants.NUM_CLASS;i++)
+            evalList.add(String.valueOf(confusion.getPredictedTotal(i)));
+        for(int i=0;i<Constants.NUM_CLASS;i++)
+            evalList.add(String.valueOf(confusion.getActualTotal(i)));
+        for(int i=0;i<Constants.NUM_CLASS;i++)
+            for(int j=0;j<Constants.NUM_CLASS;j++)
+                evalList.add(String.valueOf(confusion.getCount(i, j)));
+        
+        return evalList.toArray(new String[0]);
+    } 
 
     public int[] getRatios() {
         return ratios;

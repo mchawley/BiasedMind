@@ -26,18 +26,19 @@ public class TestClass {
     public static void main(String[] args) throws IOException {
         BasicConfigurator.configure();
         MNISTDatabase database = MNISTDatabase.getInstance();
-        
         ExperimentCases cases = ExperimentCases.getINSTANCE();
         
-        
-        
-        int[] ratios = cases.getNextExperiment().getRatios();
-        cases.completedExperiment(new Experiment());
-        log.info(Arrays.toString(ratios));
-//        String path = database.generateBiasedTrainData(ratios);
-//        MnistClassifier classifier = new MnistClassifier();
-//        Evaluation eval = classifier.trainModel(path);
-//        database.destroyBiasedTrainData(path);
+//        for(int i=0; i<cases.getNoOfCases(); i++){
+            Experiment experiment = cases.getNextExperiment();
+            int[] ratios = experiment.getRatios();
+//            log.info(Arrays.toString(ratios));
+            String path = database.generateBiasedTrainData(ratios);
+            MNISTClassifier classifier = new MNISTClassifier();
+            Evaluation eval = classifier.trainModel(path);
+            experiment.setEvaluation(eval);
+            cases.completedExperiment(experiment);
+            database.destroyBiasedTrainData(path);
+//        }
     }
         
 }
