@@ -60,7 +60,7 @@ public class ExperimentCases {
         log.info("Experiment Stats: " + experiment.getEvaluation().stats());
         
         log.info("Updating experiment evaluation: " + experiment.getExperimentNo());
-        log.info(Arrays.deepToString(experimentCases.get(experiment.getExperimentNo())));
+        log.info(experimentCases.get(experiment.getExperimentNo()));
         
         String[] writeLine = experiment.getEvaluationString();
         CSVWriter writer = new CSVWriter(new FileWriter(Constants.DATA_CSV, true));
@@ -92,10 +92,6 @@ public class ExperimentCases {
 
     public int getNoOfCases() {
         return experimentCases.size();
-    }
-
-    public boolean hasNextExperiment() {
-        return experimentCases.size()>experimentNo;
     }
     
 }

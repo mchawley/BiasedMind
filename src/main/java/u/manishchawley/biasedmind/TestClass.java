@@ -28,7 +28,7 @@ public class TestClass {
         MNISTDatabase database = MNISTDatabase.getInstance();
         ExperimentCases cases = ExperimentCases.getINSTANCE();
         
-        while(cases.hasNextExperiment()){
+//        for(int i=0; i<cases.getNoOfCases(); i++){
             Experiment experiment = cases.getNextExperiment();
             int[] ratios = experiment.getRatios();
 //            log.info(Arrays.toString(ratios));
@@ -38,7 +38,7 @@ public class TestClass {
             experiment.setEvaluation(eval);
             cases.completedExperiment(experiment);
             database.destroyBiasedTrainData(path);
-        }
+//        }
     }
         
 }

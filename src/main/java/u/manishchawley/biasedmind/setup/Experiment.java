@@ -44,10 +44,7 @@ public class Experiment {
         for(int i=0;i<Constants.NUM_CLASS;i++)
             for(int j=0;j<Constants.NUM_CLASS;j++)
                 evalList.add(String.valueOf(confusion.getCount(i, j)));
-        evalList.add(String.valueOf(evaluation.accuracy()));
-        evalList.add(String.valueOf(evaluation.precision()));
-        evalList.add(String.valueOf(evaluation.recall()));
-        evalList.add(String.valueOf(evaluation.f1()));
+        
         return evalList.toArray(new String[0]);
     } 
 
