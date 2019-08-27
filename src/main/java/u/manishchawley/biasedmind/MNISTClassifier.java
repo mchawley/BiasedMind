@@ -118,9 +118,14 @@ public class MNISTClassifier {
         log.info("Starting training");
             net.fit(trainIter);
 //            log.info("Completed epoch: " +  i);
+            try{
             Evaluation eval = net.evaluate(testIter);
 //            log.info(eval.stats());
             return eval;
+            }catch(IllegalStateException exception){
+                return null;
+            }
+            
 //
 //            trainIter.reset();
 //            testIter.reset();
