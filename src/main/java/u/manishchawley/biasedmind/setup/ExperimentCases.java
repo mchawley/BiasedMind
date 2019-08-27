@@ -56,6 +56,16 @@ public class ExperimentCases {
         return experiment;
     }
     
+    public void failedExperiment(Experiment experiment) throws IOException{
+        log.warn("Experiment failed");
+        log.info("Updating status of experiment");
+        experimentCases.get(experiment.getExperimentNo())[Constants.NUM_CLASS] = String.valueOf(2);
+        CSVWriter writer = new CSVWriter(new FileWriter(Constants.SETUP_CSV, false));
+        writer.writeAll(experimentCases);
+        writer.flush();
+        writer.close();
+    }
+    
     public void completedExperiment(Experiment experiment) throws IOException{
         log.info("Experiment Stats: " + experiment.getEvaluation().stats());
         
