@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j</artifactId>
-            <version>0.4-rc3.8</version>
+            <version>1.0.0-beta4</version>
             <type>pom</type>
         </dependency>
         <dependency>
@@ -55,12 +55,32 @@
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-common</artifactId>
-            <version>0.4-rc3.8</version>
+            <version>1.0.0-beta4</version>
         </dependency>
         <dependency>
             <groupId>org.datavec</groupId>
             <artifactId>datavec-api</artifactId>
             <version>1.0.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-api</artifactId>
+            <version>1.0.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>1.0.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.6</version>
         </dependency>
     </dependencies>
     <properties>
