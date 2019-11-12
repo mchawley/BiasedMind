@@ -11,7 +11,8 @@ package u.manishchawley.biasedmind.utils;
  */
 public class Constants {
 
-    public static final String MNIST_PATH = "E:\\Private\\Projects\\BiasedMind\\res\\MNIST";
+    public static final String RES_PATH = "E:\\My Projects\\BiasedMind\\res";
+    public static final String MNIST_PATH = RES_PATH + "\\MNIST";
     public static final String DATA_URL = "http://github.com/myleott/mnist_png/raw/master/mnist_png.tar.gz";
     public static final String SETUP_CSV = "E:\\Private\\Projects\\BiasedMind\\res\\experiments.csv";
     public static final String DATA_CSV = "E:\\Private\\Projects\\BiasedMind\\res\\experimentsdata.csv";

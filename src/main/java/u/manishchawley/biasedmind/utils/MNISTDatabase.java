@@ -29,7 +29,7 @@ public class MNISTDatabase {
     private static final MNISTDatabase INSTANCE = new MNISTDatabase();
     public Map<String, List<File>> trainFiles, testFiles;
     
-    private MNISTDatabase() {
+    public MNISTDatabase() {
         log.info("MNIST database initialized");
         if (!new File(Constants.MNIST_PATH + "/mnist_png").exists()) {
             String localFilePath = Constants.MNIST_PATH + "/mnist_png.tar.gz";
@@ -74,6 +74,7 @@ public class MNISTDatabase {
         log.info("New Biased Data folder: " + path);
         
         if(biasedDir.exists())
+//            return path;
             destroyBiasedTrainData(path);
         
         biasedDir.mkdir();

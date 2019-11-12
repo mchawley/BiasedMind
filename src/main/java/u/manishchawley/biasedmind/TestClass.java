@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import u.manishchawley.biasedmind.utils.MNISTDatabase;
 import org.nd4j.evaluation.classification.Evaluation;
@@ -25,18 +26,21 @@ public class TestClass {
     
     public static void main(String[] args) throws IOException {
         BasicConfigurator.configure();
-        MNISTDatabase database = MNISTDatabase.getInstance();
+        Logger.getRootLogger().setLevel(Level.INFO);
         ExperimentCases cases = ExperimentCases.getINSTANCE();
         
         while(cases.hasNextExperiment()){
             Experiment experiment = cases.getNextExperiment();
             int[] ratios = experiment.getRatios();
 //            log.info(Arrays.toString(ratios));
+            MNISTDatabase database = new MNISTDatabase();
             String path = database.generateBiasedTrainData(ratios);
             MNISTClassifier classifier = new MNISTClassifier();
             Evaluation eval = classifier.trainModel(path);
-            experiment.setEvaluation(eval);
-            cases.completedExperiment(experiment);
+            if(eval!=null){
+                experiment.setEvaluation(eval);
+                cases.completedExperiment(experiment);
+            }else cases.failedExperiment(experiment);
             database.destroyBiasedTrainData(path);
         }
     }
