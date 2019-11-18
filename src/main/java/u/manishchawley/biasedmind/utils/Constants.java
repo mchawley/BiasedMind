@@ -17,7 +17,8 @@ public class Constants {
     public static final String SETUP_CSV = RES_PATH + "\\experiments.csv";
     public static final String DATA_CSV = RES_PATH + "\\experimentsdata.csv";
     public static final String IMAGE_PATH = RES_PATH;
-
+    public static final String MODEL_PATH = RES_PATH + "\\models";
+    
     public static int NUM_CLASS = 10;
     public static long SEED = 1234;
     public static int ALL_TRAIN = 100;
