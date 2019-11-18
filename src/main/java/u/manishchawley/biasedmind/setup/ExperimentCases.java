@@ -27,6 +27,9 @@ import u.manishchawley.biasedmind.setup.Experiment;
  */
 public class ExperimentCases {
     private static Logger log = Logger.getLogger(ExperimentCases.class);
+    private static final int COMPLETED = 1;
+    private static final int FAILED = 2;
+    private static final int TBD = 0;
     
     private static final ExperimentCases INSTANCE = new ExperimentCases();
     private List<String []> experimentCases;
@@ -61,7 +64,7 @@ public class ExperimentCases {
     public void failedExperiment(Experiment experiment) throws IOException{
         log.warn("Experiment failed");
         log.info("Updating status of experiment");
-        experimentCases.get(experiment.getExperimentNo())[Constants.NUM_CLASS] = String.valueOf(2);
+        experimentCases.get(experiment.getExperimentNo())[Constants.NUM_CLASS] = String.valueOf(FAILED);
         CSVWriter writer = new CSVWriter(new FileWriter(Constants.SETUP_CSV, false));
         writer.writeAll(experimentCases);
         writer.flush();
@@ -85,7 +88,7 @@ public class ExperimentCases {
         ModelSerializer.writeModel(experiment.getModel(), modelFile, true);
         
         log.info("Updating status of experiment");
-        experimentCases.get(experiment.getExperimentNo())[Constants.NUM_CLASS] = String.valueOf(1);
+        experimentCases.get(experiment.getExperimentNo())[Constants.NUM_CLASS] = String.valueOf(COMPLETED);
         writer = new CSVWriter(new FileWriter(Constants.SETUP_CSV, false));
         writer.writeAll(experimentCases);
         writer.flush();
@@ -111,6 +114,6 @@ public class ExperimentCases {
     }
     
     public boolean hasNextExperiment() {
-        return experimentCases.size()>experimentNo;
+        return experimentCases.stream().anyMatch((line) -> (line[Constants.NUM_CLASS].equals(String.valueOf(TBD))));
     }
 }
