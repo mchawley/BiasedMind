@@ -79,6 +79,7 @@ public class MNISTClassifier {
     private int batchSize = 54; // number of samples that will be propagated through the network in each iteration
     private int nEpochs = 1;    // number of training epochs
 
+    MultiLayerNetwork model;
     
     public Evaluation trainModel(String path) throws IOException {
         
@@ -108,18 +109,18 @@ public class MNISTClassifier {
 
         MultiLayerConfiguration conf = getMultiLayerConfiguration();
 
-        MultiLayerNetwork net = new MultiLayerNetwork(conf);
-        net.init();
-        net.setListeners(new ScoreIterationListener(500));
+        model = new MultiLayerNetwork(conf);
+        model.init();
+        model.setListeners(new ScoreIterationListener(500));
 //        log.info("Total num of params: " + net.numParams());
 
         // evaluation while training (the score should go down)
 //        for (int i = 0; i < nEpochs; i++) {
         log.info("Starting training");
-            net.fit(trainIter);
+            model.fit(trainIter);
 //            log.info("Completed epoch: " +  i);
             try{
-            Evaluation eval = net.evaluate(testIter);
+            Evaluation eval = model.evaluate(testIter);
 //            log.info(eval.stats());
             return eval;
             }catch(IllegalStateException exception){
@@ -135,6 +136,16 @@ public class MNISTClassifier {
 //        ModelSerializer.writeModel(net, ministModelPath, true);
 //        log.info("The MINIST model has been saved in: " + ministModelPath.getPath());
     }
+
+    public MultiLayerNetwork getModel() {
+        return model;
+    }
+
+    public void setModel(MultiLayerNetwork model) {
+        this.model = model;
+    }
+    
+    
 
     private MultiLayerConfiguration getMultiLayerConfiguration() {
         log.info("Network configuration and training...");

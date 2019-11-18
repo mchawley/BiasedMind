@@ -7,6 +7,7 @@ package u.manishchawley.biasedmind.setup;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.apache.log4j.Logger;
+import org.deeplearning4j.util.ModelSerializer;
 import u.manishchawley.biasedmind.utils.Constants;
 import u.manishchawley.biasedmind.setup.Experiment;
 
@@ -77,6 +79,10 @@ public class ExperimentCases {
         writer.writeNext(writeLine);
         writer.flush();
         writer.close();
+        
+        log.info("Saving model");
+        File modelFile = new File(Constants.MODEL_PATH + "\\" + Arrays.toString(experiment.getRatios()).replaceAll("\\s+","").replaceAll("[\\[\\],]", "_") + ".zip");
+        ModelSerializer.writeModel(experiment.getModel(), modelFile, true);
         
         log.info("Updating status of experiment");
         experimentCases.get(experiment.getExperimentNo())[Constants.NUM_CLASS] = String.valueOf(1);

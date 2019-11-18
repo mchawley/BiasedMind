@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import u.manishchawley.biasedmind.utils.MNISTDatabase;
 import org.nd4j.evaluation.classification.Evaluation;
 import u.manishchawley.biasedmind.setup.Experiment;
@@ -40,14 +41,16 @@ public class TestClass {
             int[] ratios = experiment.getRatios();
 //            log.info(Arrays.toString(ratios));
             MNISTDatabase database = new MNISTDatabase();
-            String path = database.generateBiasedTrainData(ratios);
+            String path = database.generateBiasedTrainDataOptimized(ratios);
             MNISTClassifier classifier = new MNISTClassifier();
             Evaluation eval = classifier.trainModel(path);
+            MultiLayerNetwork model = classifier.getModel();
             if(eval!=null){
                 experiment.setEvaluation(eval);
+                experiment.setModel(model);
                 cases.completedExperiment(experiment);
             }else cases.failedExperiment(experiment);
-            database.destroyBiasedTrainData(path);
+//            database.destroyBiasedTrainData(path);
         }
     }
         

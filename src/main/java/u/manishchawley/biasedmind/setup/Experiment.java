@@ -8,6 +8,7 @@ package u.manishchawley.biasedmind.setup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.evaluation.classification.ConfusionMatrix;
 import org.nd4j.evaluation.classification.Evaluation;
 import u.manishchawley.biasedmind.utils.Constants;
@@ -20,6 +21,7 @@ public class Experiment {
     private int[] ratios;
     private Evaluation evaluation;
     private int experimentNo;
+    private MultiLayerNetwork model;
     
     public void ratiosFromString(String[] ratios){
         this.ratios = new int[Constants.NUM_CLASS];
@@ -74,6 +76,13 @@ public class Experiment {
     public void setExperimentNo(int experimentNo) {
         this.experimentNo = experimentNo;
     }
-    
+
+    public MultiLayerNetwork getModel() {
+        return model;
+    }
+
+    public void setModel(MultiLayerNetwork model) {
+        this.model = model;
+    }
     
 }
