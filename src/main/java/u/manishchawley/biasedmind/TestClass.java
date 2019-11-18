@@ -27,6 +27,12 @@ public class TestClass {
     public static void main(String[] args) throws IOException {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.INFO);
+        
+//        MNISTDatabase database = new MNISTDatabase();
+//        System.out.println(database.trainFiles.get("0").get(0));
+//        int[] ratios = {100,10,10,10,10,10,10,10,10,100};
+//        database.generateBiasedTrainDataOptimized(ratios);
+        
         ExperimentCases cases = ExperimentCases.getINSTANCE();
         
         while(cases.hasNextExperiment()){
