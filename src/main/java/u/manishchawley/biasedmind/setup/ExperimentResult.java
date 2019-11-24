@@ -25,7 +25,7 @@ public class ExperimentResult {
     
     private static Logger log = Logger.getLogger(ExperimentResult.class);
     private static final String[] normalData = {"100", "100", "100", "100", "100", "100", "100", "100", "100", "100", "982", "1137", "1027", "1020", "983", "893", "952", "1030", "971", "1005", "980", "1135", "1032", "1010", "982", "892", "958", "1028", "974", "1009", "974", "0", "0", "0", "0", "0", "1", "2", "2", "1", "0", "1131", "0", "2", "0", "1", "1", "0", "0", "0", "1", "1", "1018", "4", "1", "0", "0", "4", "3", "0", "0", "0", "1", "1003", "0", "3", "0", "2", "1", "0", "0", "0", "2", "0", "974", "0", "3", "2", "0", "1", "1", "0", "0", "4", "0", "885", "1", "1", "0", "0", "5", "2", "1", "1", "1", "1", "946", "0", "1", "0", "0", "1", "4", "1", "0", "0", "0", "1016", "1", "5", "1", "0", "1", "1", "0", "2", "0", "2", "962", "5", "0", "2", "0", "4", "7", "1", "0", "1", "1", "993", "0.9902", "0.990192820026378", "0.990148570349334", "0.990165781852311"};
-    public static final ExperimentResult normalResult = new ExperimentResult();
+    public static final ExperimentResult normalResult = new ExperimentResult(normalData);
 
     private ExperimentResult() {
         ratios = new int[Constants.NUM_CLASS];
@@ -52,7 +52,14 @@ public class ExperimentResult {
             //update confustion values
             pad+=100;
             //accuracy, precision, recall, F1
-            pad+=4;
+            accuracy = Double.parseDouble(normalData[pad+i]);
+            pad++;
+            precision = Double.parseDouble(normalData[pad+i]);
+            pad++;
+            recall = Double.parseDouble(normalData[pad+i]);
+            pad++;
+            F1 = Double.parseDouble(normalData[pad+i]);
+            pad++;
             // next 10 error ratios
             errorRatios[i] = ((double)predictedCounts[i] - (double)actualCounts[i])/(double)predictedCounts[i];
             deviation[i] = 1.0;
@@ -70,7 +77,13 @@ public class ExperimentResult {
         deviation = new double[Constants.NUM_CLASS];
         
 //        log.info("Received data: " + Arrays.deepToString(csvLine));
-        
+        parseString(csvLine);
+
+        label = Arrays.toString(ratios).replaceAll("\\s+","").replaceAll("[\\[\\],]", "_");
+    }
+    
+    private void parseString(String[] csvLine){
+                
         for(int i=0;i<10;i++){
             //first 10 items as ratio
             int pad = 0;
@@ -87,12 +100,19 @@ public class ExperimentResult {
             pad+=100;
             //accuracy, precision, recall, F1
             pad+=4;
+//            accuracy = Double.parseDouble(normalData[pad+i]);
+//            pad++;
+//            precision = Double.parseDouble(normalData[pad+i]);
+//            pad++;
+//            recall = Double.parseDouble(normalData[pad+i]);
+//            pad++;
+//            F1 = Double.parseDouble(normalData[pad+i]);
             // next 10 error ratios
             errorRatios[i] = ((double)predictedCounts[i] - (double)actualCounts[i])/(double)predictedCounts[i];
-            deviation[i] = 1 + (errorRatios[i] + normalResult.getErrorRatios()[i]);
+            if(normalResult!=null)
+                deviation[i] = 1 + (errorRatios[i] - normalResult.getErrorRatios()[i]);
         }   
         
-        label = Arrays.toString(ratios).replaceAll("\\s+","").replaceAll("[\\[\\],]", "_");
     }
 
     public int[] getRatios() {

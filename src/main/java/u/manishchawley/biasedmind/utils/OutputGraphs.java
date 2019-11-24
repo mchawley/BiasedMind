@@ -11,22 +11,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import javax.swing.plaf.FontUIResource;
 import org.apache.log4j.BasicConfigurator;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -34,16 +27,13 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTick;
 import org.jfree.chart.axis.TickUnit;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PolarPlot;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.DefaultPolarItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import org.jfree.ui.TextAnchor;
-import org.jfree.util.ShapeUtilities;
 import u.manishchawley.biasedmind.setup.ExperimentResult;
 
 /**
@@ -94,21 +84,30 @@ public class OutputGraphs extends ApplicationFrame{
     
     private void updateDataset(ExperimentResult result){
         xysc.removeAllSeries();
-        XYSeries normal, deviant, ratio;
-    
+        XYSeries normal, deviant, ratio, direction;
+        double directionx, directiony;
+        
         normal = new XYSeries("Normal");
         deviant = new XYSeries("Deviant");
         ratio = new XYSeries("Train ratios");
+        direction = new XYSeries("Direction");
+        directionx = 0.0;
+        directiony = 0.0;
         for(int i=0; i<Constants.NUM_CLASS;i++){
             normal.add(i*360.0/Constants.NUM_CLASS, 1);
             deviant.add(i*360.0/Constants.NUM_CLASS, result.getDeviation()[i]);
+            directionx+=result.getDeviation()[i]*Math.cos(2.0*Math.PI*i/Constants.NUM_CLASS);
+            directiony+=result.getDeviation()[i]*Math.sin(2.0*Math.PI*i/Constants.NUM_CLASS);
             ratio.add(i*360.0/Constants.NUM_CLASS, (double)result.getRatios()[i]/200.0);
             ratio.add(i*360.0/Constants.NUM_CLASS, 0.0);
         }
+        direction.add(360+180.0*Math.atan2(directionx, directiony),Math.hypot(directionx, directiony));
+        direction.add(0.0,0.0);
         title = result.getLabel();
         xysc.addSeries(normal);
         xysc.addSeries(deviant);
         xysc.addSeries(ratio);
+        xysc.addSeries(direction);
     }
     
     public JFreeChart createIndividualChart(){
@@ -136,11 +135,13 @@ public class OutputGraphs extends ApplicationFrame{
         plot.setAngleGridlinesVisible(true);
         plot.setRadiusGridlinesVisible(false);
         
+        renderer.setSeriesPaint(0, Color.BLUE);
         renderer.setSeriesFillPaint(1, Color.GREEN);
         renderer.setSeriesPaint(1, Color.GREEN);
         renderer.setSeriesFilled(1, true);
         renderer.setSeriesStroke(0, new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {6.0f, 6.0f}, 0.0f));
-        renderer.setSeriesPaint(2, Color.DARK_GRAY);
+        renderer.setSeriesPaint(2, Color.LIGHT_GRAY);
+        renderer.setSeriesPaint(3, Color.RED);
 //        renderer.setSeriesStroke(2, new BasicStroke(0.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0.0f, new float[] {6.0f, 6.0f}, 0.0f));
         
         JFreeChart chart = new JFreeChart(title, new Font(Font.DIALOG, Font.BOLD, 11), plot, false);
@@ -188,7 +189,7 @@ public class OutputGraphs extends ApplicationFrame{
         });
         
         OutputGraphs graphs = new OutputGraphs();
-        graphs.generateImages();
+//        graphs.generateImages();
         
     }
 

@@ -35,7 +35,6 @@ import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
-import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -53,6 +52,8 @@ import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.deeplearning4j.nn.conf.CacheMode;
+import org.deeplearning4j.nn.conf.WorkspaceMode;
 import u.manishchawley.biasedmind.utils.Constants;
 
 /**
@@ -68,9 +69,9 @@ import u.manishchawley.biasedmind.utils.Constants;
  * @author fvaleri
  * @author dariuszzbyrad
  */
-public class MnistClassifier {
+public class MNISTClassifier {
     
-    private static Logger log = Logger.getLogger(MnistClassifier.class);
+    private static Logger log = Logger.getLogger(MNISTClassifier.class);
     
     private int height = 28;    // height of the picture in px
     private int width = 28;     // width of the picture in px
@@ -79,6 +80,7 @@ public class MnistClassifier {
     private int batchSize = 54; // number of samples that will be propagated through the network in each iteration
     private int nEpochs = 1;    // number of training epochs
 
+    private MultiLayerNetwork model;
     
     public Evaluation trainModel(String path) throws IOException {
         
@@ -108,19 +110,24 @@ public class MnistClassifier {
 
         MultiLayerConfiguration conf = getMultiLayerConfiguration();
 
-        MultiLayerNetwork net = new MultiLayerNetwork(conf);
-        net.init();
-        net.setListeners(new ScoreIterationListener(10));
+        model = new MultiLayerNetwork(conf);
+        model.init();
+        model.setListeners(new ScoreIterationListener(500));
 //        log.info("Total num of params: " + net.numParams());
 
         // evaluation while training (the score should go down)
 //        for (int i = 0; i < nEpochs; i++) {
         log.info("Starting training");
-            net.fit(trainIter);
+            model.fit(trainIter);
 //            log.info("Completed epoch: " +  i);
-            Evaluation eval = net.evaluate(testIter);
+        try{
+            Evaluation eval = model.evaluate(testIter);
             log.info(eval.stats());
             return eval;
+        }catch(Exception e){
+            log.warn("Evaluation cannot be performed");
+            return null;
+        }
 //
 //            trainIter.reset();
 //            testIter.reset();
@@ -130,6 +137,12 @@ public class MnistClassifier {
 //        ModelSerializer.writeModel(net, ministModelPath, true);
 //        log.info("The MINIST model has been saved in: " + ministModelPath.getPath());
     }
+
+    public MultiLayerNetwork getModel() {
+        return model;
+    }
+    
+    
 
     private MultiLayerConfiguration getMultiLayerConfiguration() {
         log.info("Network configuration and training...");
@@ -144,6 +157,9 @@ public class MnistClassifier {
         
         return new NeuralNetConfiguration.Builder()
             .seed(Constants.SEED)
+            .trainingWorkspaceMode(WorkspaceMode.SEPARATE)
+            .inferenceWorkspaceMode(WorkspaceMode.SEPARATE)
+            .cacheMode(CacheMode.DEVICE)
             .l2(0.0005) // ridge regression value
             .updater(new Nesterovs(new MapSchedule(ScheduleType.ITERATION, learningRateSchedule)))
             .weightInit(WeightInit.XAVIER)
@@ -178,4 +194,10 @@ public class MnistClassifier {
             .build();
     }
 
+    public static void main(String[] args) throws IOException {
+        BasicConfigurator.configure();
+        MNISTClassifier classifier = new MNISTClassifier();
+        String path = Constants.MNIST_PATH + "/mnist_png/training";
+        Evaluation eval = classifier.trainModel(path);
+    }
 }
