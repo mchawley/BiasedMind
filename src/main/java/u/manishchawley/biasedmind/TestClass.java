@@ -16,6 +16,7 @@ import u.manishchawley.biasedmind.utils.MNISTDatabase;
 import org.nd4j.evaluation.classification.Evaluation;
 import u.manishchawley.biasedmind.setup.Experiment;
 import u.manishchawley.biasedmind.setup.ExperimentCases;
+import u.manishchawley.biasedmind.utils.Constants;
 
 /**
  *
@@ -35,6 +36,11 @@ public class TestClass {
 //        database.generateBiasedTrainDataOptimized(ratios);
         
         ExperimentCases cases = ExperimentCases.getINSTANCE();
+        
+        log.info("Experiments setup file: " + Constants.SETUP_CSV);
+        log.info("Experiments output file: " + Constants.DATA_CSV);
+        log.info("Experiments low ratio: " + Constants.LESS_TRAIN);
+        log.info("Experiments high ratio: " + Constants.ALL_TRAIN);
         
         while(cases.hasNextExperiment()){
             Experiment experiment = cases.getNextExperiment();

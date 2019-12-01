@@ -107,7 +107,7 @@ public class OutputGraphs extends ApplicationFrame{
         xysc.addSeries(normal);
         xysc.addSeries(deviant);
         xysc.addSeries(ratio);
-        xysc.addSeries(direction);
+//        xysc.addSeries(direction) ;
     }
     
     public JFreeChart createIndividualChart(){

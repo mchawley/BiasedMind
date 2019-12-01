@@ -103,6 +103,9 @@ public class MNISTDatabase {
             }
         }
         
+        int deletedFiles = 0;
+        int copiedFiles = 0;
+        
         for(int i=0; i<Constants.NUM_CLASS; i++){
             List<String> existingList = currentFiles.get(String.valueOf(i));
             List<String> requiredList = requiredFiles.get(String.valueOf(i));
@@ -117,20 +120,24 @@ public class MNISTDatabase {
                 for(String file:existingList){
                     if(!requiredList.contains(file)){
                         //delete from the current Directory
-                        log.info("Deleting file: " + reuseDirectory + file);
+//                        log.info("Deleting file: " + reuseDirectory + file);
                         Files.delete(new File(reuseDirectory + file).toPath());
+                        deletedFiles++;
                     }
                 }
             for(String file:requiredList){
                 if(existingList==null || !existingList.contains(file)){
                     //copy to the current Directory
-                    log.info("Copying file: " + trainDirectory + file);
+//                    log.info("Copying file: " + trainDirectory + file);
                     Files.copy(new File(trainDirectory + file).toPath()
                             , new File(reuseDirectory + file).toPath()
                             , StandardCopyOption.REPLACE_EXISTING);
+                    copiedFiles++;
                 }
             }
         }
+        
+        log.info("Files copied: " + copiedFiles + ", Files deleted: " + deletedFiles);
         
         return folderPath;
     }

@@ -1,1 +1,7 @@
 /target/
+*.png
+res/MNIST/mnist_png.tar.gz
+*.txt
+runcode.bat
+*.zip
+res/models.rar
