@@ -50,17 +50,23 @@ public class OutputGraphs extends ApplicationFrame{
     public OutputGraphs() throws IOException {
         super(OutputGraphs.class.getName());
         
-        results = new ArrayList<>();
-        CSVReader reader = new CSVReader(new FileReader(Constants.DATA_CSV));
-        List<String[]> lines = reader.readAll();
-        lines.forEach((line) -> {
-            results.add(new ExperimentResult(line));
-        });
+        getResultsFromCSV(Constants.DATA_CSV);
         
         xysc = new XYSeriesCollection();
         updateDataset(ExperimentResult.normalResult);
         counter=0;
         createPanel();
+    }
+
+    public OutputGraphs(String dataFile) throws IOException {
+        super(OutputGraphs.class.getName());
+        getResultsFromCSV(dataFile);
+        xysc = new XYSeriesCollection();
+        updateDataset(ExperimentResult.normalResult);
+    }
+
+    public List<ExperimentResult> getResults() {
+        return results;
     }
     
     private void createPanel(){
@@ -163,12 +169,8 @@ public class OutputGraphs extends ApplicationFrame{
     
     private void generateImages() {
         results.forEach((result) -> {
-            try {
-                updateDataset(result);
-                ChartUtilities.saveChartAsPNG(new File(Constants.IMAGE_PATH + "\\" + result.getLabel() + ".png"), createIndividualChart(), 400, 350);
-            } catch (IOException ex) {
-                Logger.getLogger(OutputGraphs.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            updateDataset(result);
+//                ChartUtilities.saveChartAsPNG(new File(Constants.IMAGE_PATH + "\\" + result.getLabel() + ".png"), createIndividualChart(), 400, 350);
         });
     }
     
@@ -191,6 +193,16 @@ public class OutputGraphs extends ApplicationFrame{
         OutputGraphs graphs = new OutputGraphs();
 //        graphs.generateImages();
         
+    }
+
+    private getResultsFromCSV(String dataFile) throws IOException {
+        results = new ArrayList<>();
+        CSVReader reader = new CSVReader(new FileReader(Constants.DATA_CSV));
+        List<String[]> lines = reader.readAll();
+        lines.forEach((line) -> {
+            results.add(new ExperimentResult(line));
+        });
+
     }
 
 }

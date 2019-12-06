@@ -40,7 +40,7 @@ public class TestClass {
         log.info("Experiments setup file: " + Constants.SETUP_CSV);
         log.info("Experiments output file: " + Constants.DATA_CSV);
         log.info("Experiments low ratio: " + Constants.LESS_TRAIN);
-        log.info("Experiments high ratio: " + Constants.ALL_TRAIN);
+        log.info("Experiments high ratio: " + Constants.ALL_TRAIN);   
         
         while(cases.hasNextExperiment()){
             Experiment experiment = cases.getNextExperiment();
