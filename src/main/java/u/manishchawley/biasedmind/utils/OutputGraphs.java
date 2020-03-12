@@ -16,10 +16,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -41,6 +40,7 @@ import u.manishchawley.biasedmind.setup.ExperimentResult;
  * @author Manish Chawley
  */
 public class OutputGraphs extends ApplicationFrame{
+    private static final Logger log = Logger.getLogger(OutputGraphs.class);
     private List<ExperimentResult> results;
     
     private XYSeriesCollection xysc;
@@ -60,6 +60,7 @@ public class OutputGraphs extends ApplicationFrame{
 
     public OutputGraphs(String dataFile) throws IOException {
         super(OutputGraphs.class.getName());
+        log.info("Reading data from file: " + dataFile);
         getResultsFromCSV(dataFile);
         xysc = new XYSeriesCollection();
         updateDataset(ExperimentResult.normalResult);
@@ -88,7 +89,7 @@ public class OutputGraphs extends ApplicationFrame{
         this.add(previous, BorderLayout.WEST);
     }
     
-    private void updateDataset(ExperimentResult result){
+    public void updateDataset(ExperimentResult result){
         xysc.removeAllSeries();
         XYSeries normal, deviant, ratio, direction;
         double directionx, directiony;
@@ -186,7 +187,7 @@ public class OutputGraphs extends ApplicationFrame{
                 outputGraphs.setVisible(true);
                 
             } catch (IOException ex) {
-                Logger.getLogger(OutputGraphs.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             }
         });
         
@@ -195,9 +196,9 @@ public class OutputGraphs extends ApplicationFrame{
         
     }
 
-    private getResultsFromCSV(String dataFile) throws IOException {
+    private void getResultsFromCSV(String dataFile) throws IOException {
         results = new ArrayList<>();
-        CSVReader reader = new CSVReader(new FileReader(Constants.DATA_CSV));
+        CSVReader reader = new CSVReader(new FileReader(dataFile));
         List<String[]> lines = reader.readAll();
         lines.forEach((line) -> {
             results.add(new ExperimentResult(line));
