@@ -84,7 +84,7 @@ public class ExperimentCases {
         writer.close();
         
         log.info("Saving model");
-        File modelFile = new File(Constants.MODEL_PATH + "\\" + Arrays.toString(experiment.getRatios()).replaceAll("\\s+","").replaceAll("[\\[\\],]", "_") + ".zip");
+        File modelFile = new File(Constants.MODEL_PATH + "/" + Arrays.toString(experiment.getRatios()).replaceAll("\\s+","").replaceAll("[\\[\\],]", "_") + ".zip");
         ModelSerializer.writeModel(experiment.getModel(), modelFile, true);
         
         log.info("Updating status of experiment");

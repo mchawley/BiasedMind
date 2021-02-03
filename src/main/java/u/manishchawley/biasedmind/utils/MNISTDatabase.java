@@ -70,7 +70,7 @@ public class MNISTDatabase {
     
     public String generateBiasedTrainDataOptimized(int[] ratios) throws IOException{
         if(ratios.length != Constants.NUM_CLASS) return null;
-        String folderPath = Constants.MNIST_PATH + "\\mnist_png\\" + REUSABLE_FOLDER;
+        String folderPath = Constants.MNIST_PATH + "/mnist_png/" + REUSABLE_FOLDER;
         log.info("Using existing biased folder" + folderPath);
         
         Map<String, List<String>> currentFiles = new HashMap<>();
@@ -110,11 +110,11 @@ public class MNISTDatabase {
             List<String> existingList = currentFiles.get(String.valueOf(i));
             List<String> requiredList = requiredFiles.get(String.valueOf(i));
             
-            String trainDirectory = Constants.MNIST_PATH + "\\mnist_png\\training\\" + String.valueOf(i) + "\\";
-            String reuseDirectory = folderPath + "\\" + String.valueOf(i) + "\\";
+            String trainDirectory = Constants.MNIST_PATH + "/mnist_png/training/" + String.valueOf(i) + "/";
+            String reuseDirectory = folderPath + "/" + String.valueOf(i) + "/";
             
-            if(!new File(folderPath + "\\" + String.valueOf(i)).exists())
-                new File(folderPath + "\\" + String.valueOf(i)).mkdir();
+            if(!new File(folderPath + "/" + String.valueOf(i)).exists())
+                new File(folderPath + "/" + String.valueOf(i)).mkdir();
             
             if(existingList!=null)
                 for(String file:existingList){
